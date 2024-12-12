@@ -79,6 +79,21 @@
 		<string>INSendMessageIntent</string>
 		<string>INStartCallIntent</string>
 	</array>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Marianne-Bold.otf</string>
+		<string>Marianne-BoldItalic.otf</string>
+		<string>Marianne-ExtraBold.otf</string>
+		<string>Marianne-ExtraBoldItalic.otf</string>
+		<string>Marianne-Light.otf</string>
+		<string>Marianne-LightItalic.otf</string>
+		<string>Marianne-Medium.otf</string>
+		<string>Marianne-MediumItalic.otf</string>
+		<string>Marianne-Regular.otf</string>
+		<string>Marianne-RegularItalic.otf</string>
+		<string>Marianne-Thin.otf</string>
+		<string>Marianne-ThinItalic.otf</string>
+	</array>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>audio</string>

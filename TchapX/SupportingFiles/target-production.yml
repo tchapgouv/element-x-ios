@@ -110,6 +110,20 @@ targets:
           LSItemContentTypes: $(PILLS_UT_TYPE_IDENTIFIER)
         LSSupportsOpeningDocumentsInPlace: false
         mapLibreAPIKey: $(MAPLIBRE_API_KEY)
+        UIAppFonts: [
+		  Marianne-Bold.otf,
+		  Marianne-BoldItalic.otf,
+		  Marianne-ExtraBold.otf,
+		  Marianne-ExtraBoldItalic.otf,
+		  Marianne-Light.otf,
+		  Marianne-LightItalic.otf,
+		  Marianne-Medium.otf,
+		  Marianne-MediumItalic.otf,
+		  Marianne-Regular.otf,
+		  Marianne-RegularItalic.otf,
+		  Marianne-Thin.otf,
+		  Marianne-ThinItalic.otf
+        ]
 
     settings:
       base:
