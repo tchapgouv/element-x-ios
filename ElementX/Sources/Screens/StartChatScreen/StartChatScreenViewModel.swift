@@ -68,6 +68,8 @@ class StartChatScreenViewModel: StartChatScreenViewModelType, StartChatScreenVie
                     self.displayError()
                 }
             }
+        case .joinForum: // Tchap: handle `joinForum` action
+            actionsSubject.send(.joinForum)
         }
     }
     

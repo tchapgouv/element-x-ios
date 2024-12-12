@@ -20,6 +20,7 @@ struct StartChatScreenCoordinatorParameters {
 enum StartChatScreenCoordinatorAction {
     case close
     case openRoom(withIdentifier: String)
+    case joinForum // Tchap: add `join Forum` action to `StartChat` screen
 }
 
 final class StartChatScreenCoordinator: CoordinatorProtocol {
@@ -62,6 +63,8 @@ final class StartChatScreenCoordinator: CoordinatorProtocol {
                 presentInviteUsersScreen()
             case .openRoom(let identifier):
                 actionsSubject.send(.openRoom(withIdentifier: identifier))
+            case .joinForum: // Tchap: add `join Forum` action to `StartChat` screen
+                actionsSubject.send(.joinForum)
             }
         }
         .store(in: &cancellables)
@@ -104,7 +107,7 @@ final class StartChatScreenCoordinator: CoordinatorProtocol {
             self?.selectedUsers.send([])
         }
     }
-    
+
     private func openCreateRoomScreen() {
         let createParameters = CreateRoomCoordinatorParameters(userSession: parameters.userSession,
                                                                userIndicatorController: parameters.userIndicatorController,

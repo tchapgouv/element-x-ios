@@ -288,8 +288,12 @@ class UserSessionFlowCoordinator: FlowCoordinatorProtocol {
                 break
             case (.roomList, .showRoomDirectorySearchScreen, .roomDirectorySearchScreen):
                 presentRoomDirectorySearch()
-            case (.roomDirectorySearchScreen, .dismissedRoomDirectorySearchScreen, .roomList):
-                dismissRoomDirectorySearch()
+            // Tchap: handle dismissing mode for dismissedRoomDirectorySearchScreen
+//            case (.roomDirectorySearchScreen, .dismissedRoomDirectorySearchScreen, .roomList):
+//                dismissRoomDirectorySearch()
+            case (.roomDirectorySearchScreen, .dismissedRoomDirectorySearchScreen(let isPresentedInFullScreenMode), .roomList),
+                 (.roomList, .dismissedRoomDirectorySearchScreen(let isPresentedInFullScreenMode), .roomList):
+                dismissRoomDirectorySearch(isPresentedInFullScreenMode: isPresentedInFullScreenMode)
             case (_, .showUserProfileScreen(let userID), .userProfileScreen):
                 presentUserProfileScreen(userID: userID, animated: animated)
             case (.userProfileScreen, .dismissedUserProfileScreen, .roomList):
@@ -628,6 +632,8 @@ class UserSessionFlowCoordinator: FlowCoordinatorProtocol {
             case .openRoom(let roomID):
                 self.navigationSplitCoordinator.setSheetCoordinator(nil)
                 self.stateMachine.processEvent(.selectRoom(roomID: roomID, via: [], entryPoint: .room))
+            case .joinForum: // Tchap: handle `joinForum` action
+                presentRoomDirectorySearch(inFullScreenMode: false)
             }
         }
         .store(in: &cancellables)
@@ -841,7 +847,12 @@ class UserSessionFlowCoordinator: FlowCoordinatorProtocol {
     
     // MARK: Room Directory Search
     
-    private func presentRoomDirectorySearch() {
+    // Tchap: add a flag to present the view fullscreen or in sheet.
+    // Because in Tchap, it is called from am already fullScreenCover view.
+    // And the system can't stack 2 fullScreenCover views.
+    // Sp, present it in a sheet for Tchap "Start Chat" view.
+//    private func presentRoomDirectorySearch() {
+    private func presentRoomDirectorySearch(inFullScreenMode: Bool = true) {
         let coordinator = RoomDirectorySearchScreenCoordinator(parameters: .init(clientProxy: userSession.clientProxy,
                                                                                  mediaProvider: userSession.mediaProvider,
                                                                                  userIndicatorController: ServiceLocator.shared.userIndicatorController))
@@ -851,24 +862,45 @@ class UserSessionFlowCoordinator: FlowCoordinatorProtocol {
             
             switch action {
             case .selectAlias(let alias):
-                stateMachine.processEvent(.dismissedRoomDirectorySearchScreen)
+                // Tchap: handle presentation mode to dismiss the view in the correct way.
+//                stateMachine.processEvent(.dismissedRoomDirectorySearchScreen)
+                stateMachine.processEvent(.dismissedRoomDirectorySearchScreen(isPresentedInFullScreenMode: inFullScreenMode))
                 handleAppRoute(.roomAlias(alias), animated: true)
             case .selectRoomID(let roomID):
-                stateMachine.processEvent(.dismissedRoomDirectorySearchScreen)
+                // Tchap: handle presentation mode to dismiss the view in the correct way.
+//                stateMachine.processEvent(.dismissedRoomDirectorySearchScreen)
+                stateMachine.processEvent(.dismissedRoomDirectorySearchScreen(isPresentedInFullScreenMode: inFullScreenMode))
                 handleAppRoute(.room(roomID: roomID, via: []), animated: true)
             case .dismiss:
-                stateMachine.processEvent(.dismissedRoomDirectorySearchScreen)
+                // Tchap: handle presentation mode to dismiss the view in the correct way.
+//                stateMachine.processEvent(.dismissedRoomDirectorySearchScreen)
+                stateMachine.processEvent(.dismissedRoomDirectorySearchScreen(isPresentedInFullScreenMode: inFullScreenMode))
             }
         }
         .store(in: &cancellables)
         
-        navigationSplitCoordinator.setFullScreenCoverCoordinator(coordinator)
+        // Tchap: handle presentation mode.
+//        navigationSplitCoordinator.setFullScreenCoverCoordinator(coordinator)
+        if inFullScreenMode {
+            navigationSplitCoordinator.setFullScreenCoverCoordinator(coordinator)
+        } else {
+            navigationSplitCoordinator.setSheetCoordinator(coordinator)
+        }
     }
     
-    private func dismissRoomDirectorySearch() {
-        navigationSplitCoordinator.setFullScreenCoverCoordinator(nil)
+    // Tchap: add a flag to dismiss the view in correct presentation mode: fullscreen or in sheet.
+//    private func dismissRoomDirectorySearch() {
+//        navigationSplitCoordinator.setFullScreenCoverCoordinator(nil)
+//    }
+//
+    private func dismissRoomDirectorySearch(isPresentedInFullScreenMode: Bool = true) {
+        if isPresentedInFullScreenMode {
+            navigationSplitCoordinator.setFullScreenCoverCoordinator(nil)
+        } else {
+            navigationSplitCoordinator.setSheetCoordinator(nil)
+        }
     }
-    
+
     // MARK: User Profile
     
     private func presentUserProfileScreen(userID: String, animated: Bool) {

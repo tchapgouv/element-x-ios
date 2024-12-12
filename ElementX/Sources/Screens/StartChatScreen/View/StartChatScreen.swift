@@ -39,6 +39,7 @@ struct StartChatScreen: View {
     @ViewBuilder
     private var mainContent: some View {
         createRoomSection
+        joinForumSection // Tchap: Join a forum
         inviteFriendsSection
         usersSection
     }
@@ -71,6 +72,16 @@ struct StartChatScreen: View {
                 }
             })
             .accessibilityIdentifier(A11yIdentifiers.startChatScreen.inviteFriends)
+        }
+    }
+    
+    // Tchap: Join a forum (add section without chevron)
+    private var joinForumSection: some View {
+        Section {
+            ListRow(label: .default(title: TchapL10n.joinForum,
+                                    icon: \.listBulleted),
+                    kind: .button { context.send(viewAction: .joinForum) })
+                .accessibilityIdentifier(TchapA11yIdentifiers.startChatScreen.joinForum)
         }
     }
     

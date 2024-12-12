@@ -16,6 +16,7 @@ enum StartChatScreenViewModelAction {
     case close
     case createRoom
     case openRoom(withIdentifier: String)
+    case joinForum // Tchap: add `join Forum` action to `StartChat` screen
 }
 
 struct StartChatScreenViewState: BindableState {
@@ -43,4 +44,5 @@ enum StartChatScreenViewAction {
     case close
     case createRoom
     case selectUser(UserProfileProxy)
+    case joinForum // Tchap: add `join Forum` action to `StartChat` screen
 }
